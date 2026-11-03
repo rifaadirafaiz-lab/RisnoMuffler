@@ -27,4 +27,10 @@ public class CatalogView {
         
         initComponents();
     }
+    private void initComponents(){
+        String[] columns = {"ID", "Nama Product", "Tipe", "Harga (Rp)", "Stok"};
+        tableModel = new DefaulTableModel(columns, 0) {
+            
+        }
+    }
 }
