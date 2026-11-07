@@ -28,7 +28,6 @@ public class CatalogController {
         
         view.getBtnRefresh().addActionListener(e -> loadProducts());
         
-        // Aksi Tombol Tambah
         view.getBtnTambah().addActionListener(e -> {
             Product newProduct = view.showFormDialog(null);
             if (newProduct != null) {
@@ -41,14 +40,12 @@ public class CatalogController {
             }
         });
 
-        // Aksi Tombol Edit
         view.getBtnEdit().addActionListener(e -> {
             int selectedRow = view.getTable().getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(view, "Pilih produk yang ingin diedit terlebih dahulu!", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            // Ambil data dari baris yang dipilih
             int id = (int) view.getTable().getValueAt(selectedRow, 0);
             String name = (String) view.getTable().getValueAt(selectedRow, 1);
             String type = (String) view.getTable().getValueAt(selectedRow, 2);
@@ -68,7 +65,6 @@ public class CatalogController {
             }
         });
 
-        // Aksi Tombol Hapus
         view.getBtnHapus().addActionListener(e -> {
             int selectedRow = view.getTable().getSelectedRow();
             if (selectedRow == -1) {
