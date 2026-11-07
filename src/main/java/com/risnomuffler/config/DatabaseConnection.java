@@ -12,21 +12,24 @@ import java.sql.SQLException;
  * @author Faiz <faiz@email.com>
  */
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/risno_muffler?useSSL=false&serverTimezone=UTC";
+   private static final String URL = "jdbc:mysql://localhost:3306/risno_muffler?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD ="qwerty123";
-    private static Connection connection = null;
-    
-    private DatabaseConnection(){}
-    
-    public static Connection getConnection() throws SQLException{
-        if (connection == null || connection.isClosed()){
-            try{
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException e){
-                throw new SQLException("MySQL JDBC Driver tidak ditemukan.",e);
-            }
+    private static final String PASSWORD = "qwerty123"; // <--- Pastikan ini benar!
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            // Tambahkan baris ini agar driver dikenali
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            // Kembalikan koneksi
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+            
+        } catch (ClassNotFoundException e) {
+            System.err.println("ERROR: Driver MySQL tidak ditemukan!");
+            throw new SQLException("Driver tidak ditemukan", e);
+        } catch (SQLException e) {
+            System.err.println("ERROR KONEKSI: " + e.getMessage());
+            throw e; // Lemparkan error agar bisa ditangkap oleh Repository
         }
-        return connection;
     }
 }
