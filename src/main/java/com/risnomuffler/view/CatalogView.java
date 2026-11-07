@@ -16,11 +16,11 @@ import java.util.List;
 public class CatalogView extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
-    private JButton btnRefresh;
+    private JButton btnRefresh, btnTambah, btnEdit, btnHapus;
     
     public CatalogView(){
         setTitle("Katalog knalpot Risno Muffler");
-        setSize(700, 400);
+        setSize(800, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -37,13 +37,18 @@ public class CatalogView extends JFrame {
         };
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
-        btnRefresh = new JButton("Refresh Data");
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel lblJudul = new JLabel("Daftar Produk Knalpot:");
-        lblJudul.setFont(new Font("Arial", Font.BOLD, 14));
-        topPanel.add(lblJudul);
+        btnRefresh = new JButton("Refresh");
+        btnTambah = new JButton("Tambah Produk");
+        btnEdit = new JButton("Edit Produk");
+        btnHapus = new JButton("Hapus Produk");
+
+        topPanel.add(new JLabel("Daftar Produk:"));
         topPanel.add(btnRefresh);
-        
+        topPanel.add(btnTambah);
+        topPanel.add(btnEdit);
+        topPanel.add(btnHapus);
+
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
@@ -62,7 +67,42 @@ public class CatalogView extends JFrame {
             tableModel.addRow(row);
         }
     }
-    public JButton getBtnRefresh(){
-        return btnRefresh;
+    public JButton getBtnRefresh(){return btnRefresh; }
+    public JButton getBtnTambah() { return btnTambah; }
+    public JButton getBtnEdit() { return btnEdit; }
+    public JButton getBtnHapus() { return btnHapus; }
+    
+    public JTable getTable() { return table; }
+    
+    public Product showFormDialog(Product existingProduct) {
+        JTextField nameField = new JTextField(existingProduct != null ? existingProduct.getName() : "");
+        JTextField typeField = new JTextField(existingProduct != null ? existingProduct.getType() : "");
+        JTextField priceField = new JTextField(existingProduct != null ? String.valueOf(existingProduct.getPrice()) : "");
+        JTextField stockField = new JTextField(existingProduct != null ? String.valueOf(existingProduct.getStock()) : "");
+
+        Object[] message = {
+            "Nama Produk:", nameField,
+            "Tipe:", typeField,
+            "Harga:", priceField,
+            "Stok:", stockField
+        };
+
+        String title = existingProduct == null ? "Tambah Produk Baru" : "Edit Produk";
+        int option = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.OK_CANCEL_OPTION);
+        
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                String name = nameField.getText();
+                String type = typeField.getText();
+                double price = Double.parseDouble(priceField.getText());
+                int stock = Integer.parseInt(stockField.getText());
+                
+                int id = existingProduct != null ? existingProduct.getId() : 0;
+                return new Product(id, name, type, price, stock);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Harga dan Stok harus berupa angka!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return null;
     }
 }

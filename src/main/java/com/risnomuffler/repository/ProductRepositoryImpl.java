@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
         
 /**
  *
@@ -40,5 +41,50 @@ public class ProductRepositoryImpl implements ProductRepository {
             System.err.println("Gagal mengambil data: " + e.getMessage());
         }
         return products;
+    }
+     @Override
+    public boolean saveProduct(Product product) {
+        String sql = "INSERT INTO products (name, type, price, stock) VALUES (?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, product.getName());
+            pstmt.setString(2, product.getType());
+            pstmt.setDouble(3, product.getPrice());
+            pstmt.setInt(4, product.getStock());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Gagal menyimpan: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateProduct(Product product) {
+        String sql = "UPDATE products SET name=?, type=?, price=?, stock=? WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, product.getName());
+            pstmt.setString(2, product.getType());
+            pstmt.setDouble(3, product.getPrice());
+            pstmt.setInt(4, product.getStock());
+            pstmt.setInt(5, product.getId());
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Gagal mengupdate: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteProduct(int id) {
+        String sql = "DELETE FROM products WHERE id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Gagal menghapus: " + e.getMessage());
+            return false;
+        }
     }
 }

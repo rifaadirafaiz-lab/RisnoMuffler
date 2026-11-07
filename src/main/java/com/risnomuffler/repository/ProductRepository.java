@@ -11,4 +11,8 @@ import java.util.List;
  */
 public interface ProductRepository {
     List<Product> getAllProducts();
+    
+    boolean saveProduct(Product product);
+    boolean updateProduct(Product product);
+    boolean deleteProduct(int id);
 }
